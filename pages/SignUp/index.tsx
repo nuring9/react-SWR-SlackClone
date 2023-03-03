@@ -2,12 +2,12 @@ import useInput from '@hooks/useInput';
 import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from './styles';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
-  const [password, setPassword] = useInput('');
+  const [password, , setPassword] = useInput('');
   const [passwordCheck, , setPasswordCheck] = useInput('');
   const [mismatchError, setMismatchError] = useState(false);
   const [signUpError, setSignUpError] = useState('');
@@ -15,7 +15,7 @@ const SignUp = () => {
 
   const onChangePassword = useCallback(
     (e) => {
-      setPassword(e.target.valuse);
+      setPassword(e.target.value);
       setMismatchError(e.target.value !== passwordCheck);
     },
     [passwordCheck],
@@ -37,7 +37,7 @@ const SignUp = () => {
         setSignUpError('');
         setSignUpSuccess(false);
         axios
-          .post('http://localhost:3090/api/users', {
+          .post('/api/users', {
             email,
             nickname,
             password,

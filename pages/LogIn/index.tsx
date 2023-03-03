@@ -3,7 +3,7 @@ import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } fro
 
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const LogIn = () => {
   const [logInError, setLogInError] = useState(false);
@@ -15,7 +15,7 @@ const LogIn = () => {
       setLogInError(false);
       axios
         .post(
-          'http://localhost:3090/api/users/login',
+          '/api/users/login',
           { email, password },
           {
             withCredentials: true,
