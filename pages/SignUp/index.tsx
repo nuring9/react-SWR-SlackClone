@@ -3,8 +3,12 @@ import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from './styles';
 import { Link } from 'react-router-dom';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
 
 const SignUp = () => {
+  const { data, error } = useSWR('/api/users', fetcher);
+
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, , setPassword] = useInput('');
@@ -42,13 +46,13 @@ const SignUp = () => {
             nickname,
             password,
           })
-          .then((res) => {
-            console.log(res);
+          .then((response) => {
+            console.log(response);
             setSignUpSuccess(true);
           })
-          .catch((err) => {
-            console.log(err.response);
-            setSignUpError(err.response.data);
+          .catch((error) => {
+            console.log(error.response);
+            setSignUpError(error.response.data);
           })
           .finally(() => {});
       }
