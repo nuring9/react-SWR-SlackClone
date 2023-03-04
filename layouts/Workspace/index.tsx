@@ -8,26 +8,31 @@ import {
   WorkspaceName,
   MenuScroll,
   Workspaces,
+  ProfileModal,
+  LogOutButton,
 } from '@layouts/Workspace/styles';
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 
+import Menu from '@components/Menu';
+
 import { Redirect, Switch, Route } from 'react-router-dom';
 import loadable from '@loadable/component';
 
-import gravata from 'gravatar';
+import gravatar from 'gravatar';
 
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
 const Workspace: FC = ({ children }) => {
-  const { data, error, mutate } = useSWR('/api/users', fetcher);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const { data: userData, error, mutate } = useSWR('/api/users', fetcher);
 
-  const onLogout = useCallback(() => {
+  const onLogOut = useCallback(() => {
     axios
-      .post('/api/users/logout', null, {
+      .post('http://localhost:3095/api/users/logout', null, {
         withCredentials: true,
       })
       .then(() => {
@@ -35,7 +40,11 @@ const Workspace: FC = ({ children }) => {
       });
   }, []);
 
-  if (!data) {
+  const onClickUserProfile = useCallback(() => {
+    setShowUserMenu((prev) => !prev);
+  }, []); // 토글 함수
+
+  if (!userData) {
     // 만약 data가 없을 경우 로그인창으로 이동
     return <Redirect to="/login" />;
   }
@@ -44,12 +53,23 @@ const Workspace: FC = ({ children }) => {
     <div>
       <Header>
         <RightMenu>
-          <span>
-            <ProfileImg src={gravata.url(data.email, { s: '28px', d: 'retro' })} alt={data.email} />
+          <span onClick={onClickUserProfile}>
+            <ProfileImg src={gravatar.url(userData.email, { s: '28px', d: 'retro' })} alt={userData.nickname} />
+            {showUserMenu && (
+              <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
+                <ProfileModal>
+                  <img src={gravatar.url(userData.email, { s: '36px', d: 'retro' })} alt={userData.nickname} />
+                  <div>
+                    <span id="profile-name">{userData.nickname}</span>
+                    <span id="profile-active">Active</span>
+                  </div>
+                </ProfileModal>
+                <LogOutButton onClick={onLogOut}>로그아웃</LogOutButton>
+              </Menu>
+            )}
           </span>
         </RightMenu>
       </Header>
-      <button onClick={onLogout}>로그아웃</button>
       <WorkspaceWrapper>
         <Workspaces>test</Workspaces>
         <Channels>
