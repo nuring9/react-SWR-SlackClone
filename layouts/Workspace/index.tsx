@@ -1,8 +1,20 @@
-import React, { FC, useCallback } from 'react';
+import {
+  Channels,
+  Chats,
+  Header,
+  ProfileImg,
+  RightMenu,
+  WorkspaceWrapper,
+  WorkspaceName,
+  MenuScroll,
+  Workspaces,
+} from '@layouts/Workspace/styles';
+import React, { Children, FC, useCallback } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import gravata from 'gravatar';
 
 const Workspace: FC = ({ children }) => {
   const { data, error, mutate } = useSWR('/api/users', fetcher);
@@ -24,8 +36,22 @@ const Workspace: FC = ({ children }) => {
 
   return (
     <div>
+      <Header>
+        <RightMenu>
+          <span>
+            <ProfileImg src={gravata.url(data.email, { s: '28px', d: 'retro' })} alt={data.email} />
+          </span>
+        </RightMenu>
+      </Header>
       <button onClick={onLogout}>로그아웃</button>
-      {children}
+      <WorkspaceWrapper>
+        <Workspaces>test</Workspaces>
+        <Channels>
+          <WorkspaceName>Sleact</WorkspaceName>
+          <MenuScroll>menuscroll</MenuScroll>
+        </Channels>
+        <Chats>Chats</Chats>
+      </WorkspaceWrapper>
     </div>
   );
 };
