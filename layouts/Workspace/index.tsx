@@ -9,12 +9,18 @@ import {
   MenuScroll,
   Workspaces,
 } from '@layouts/Workspace/styles';
-import React, { Children, FC, useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import { Redirect } from 'react-router';
+
+import { Redirect, Switch, Route } from 'react-router-dom';
+import loadable from '@loadable/component';
+
 import gravata from 'gravatar';
+
+const Channel = loadable(() => import('@pages/Channel'));
+const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
 const Workspace: FC = ({ children }) => {
   const { data, error, mutate } = useSWR('/api/users', fetcher);
@@ -50,7 +56,12 @@ const Workspace: FC = ({ children }) => {
           <WorkspaceName>Sleact</WorkspaceName>
           <MenuScroll>menuscroll</MenuScroll>
         </Channels>
-        <Chats>Chats</Chats>
+        <Chats>
+          <Switch>
+            <Route path="/workspace/channel" component={Channel} />
+            <Route path="/workspace/dm" component={DirectMessage} />
+          </Switch>
+        </Chats>
       </WorkspaceWrapper>
     </div>
   );
