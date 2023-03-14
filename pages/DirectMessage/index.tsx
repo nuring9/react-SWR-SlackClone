@@ -20,6 +20,7 @@ const DirectMessage = () => {
 
   const onSubmitForm = useCallback((e) => {
     e.preventDefault();
+    setChat('');
   }, []);
 
   if (!userData || !myData) {
