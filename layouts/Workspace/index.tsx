@@ -74,7 +74,7 @@ const Workspace: VFC = () => {
       .then(() => {
         mutate();
       });
-  }, []);
+  }, [mutate]);
 
   const onCloseUserProfile = useCallback((e) => {
     e.stopPropagation();
@@ -116,7 +116,7 @@ const Workspace: VFC = () => {
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
-    [newWorkspace, newUrl],
+    [newWorkspace, newUrl, mutate, setNewWorkspace, setNewUrl],
   );
 
   const onCloseModal = useCallback(() => {
@@ -138,9 +138,9 @@ const Workspace: VFC = () => {
     setShowInviteWorkspaceModal(true);
   }, []);
 
-  const onClickInviteChannel = useCallback(() => {
-    setShowInviteChannelModal(true);
-  }, []);
+  // const onClickInviteChannel = useCallback(() => {
+  //   setShowInviteChannelModal(true);
+  // }, []);
 
   if (!userData) {
     return <Redirect to="/login" />;

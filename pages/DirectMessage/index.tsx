@@ -9,7 +9,9 @@ import axios from 'axios';
 import gravatar from 'gravatar';
 
 import { useParams } from 'react-router';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
+import { IDM } from '@typings/db';
+
 import useInput from '@hooks/useInput';
 
 const DirectMessage = () => {
@@ -17,11 +19,30 @@ const DirectMessage = () => {
   const [chat, onChangeChat, setChat] = useInput('');
   const { data: userData } = useSWR(`/api/workspaces/${workspace}/users/${id}`, fetcher);
   const { data: myData } = useSWR('/api/users', fetcher);
+  const { data: chatData, mutate: mutateChat } = useSWR<IDM[]>(
+    `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`,
+    fetcher,
+  );
 
-  const onSubmitForm = useCallback((e) => {
-    e.preventDefault();
-    setChat('');
-  }, []);
+  const onSubmitForm = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log('submit');
+      if (chat?.trim()) {
+        axios
+          .post(`/api/workspaces/${workspace}/dms/${id}/chats`, {
+            content: chat,
+          })
+          .then(() => {
+            mutateChat();
+            setChat('');
+          })
+          .catch(console.error);
+      }
+      setChat('');
+    },
+    [id, chat, workspace],
+  );
 
   if (!userData || !myData) {
     return null;
