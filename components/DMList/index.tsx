@@ -7,6 +7,8 @@ import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
 
+import useSocket from '@hooks/useSocket';
+
 const DMList: FC = () => {
   const { workspace } = useParams<{ workspace?: string }>();
   const {
@@ -24,6 +26,8 @@ const DMList: FC = () => {
   const [channelCollapse, setChannelCollapse] = useState(false);
   const [onlineList, setOnlineList] = useState<number[]>([]);
 
+  const [socket] = useSocket(workspace);
+
   const toggleChannelCollapse = useCallback(() => {
     setChannelCollapse((prev) => !prev);
   }, []);
@@ -32,6 +36,18 @@ const DMList: FC = () => {
     console.log('DMList: workspace 바꼈다', workspace);
     setOnlineList([]);
   }, [workspace]);
+
+  useEffect(() => {
+    socket?.on('onlineList', (data: number[]) => {
+      setOnlineList(data);
+    });
+    return () => {
+      socket?.off('onlineList');
+    };
+  }, [socket]);
+
+  // on 이벤트가 있으면 항상 on을 정리해주는 off를 사용하자. on과 off는 짝이다.
+  // on이 5번 됬을때 프론트에서는 데이터를 5번 받게된다. 그러니 두번 이상 연결되는 상황이 나오지 않도록 항상 연결을 했으면 useEffect에서 정리하는 함수를 사용해야한다.(cleanup)
 
   return (
     <>
