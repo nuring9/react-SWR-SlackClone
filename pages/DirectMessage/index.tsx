@@ -1,4 +1,5 @@
 import ChatBox from '@components/ChatBox';
+import ChatList from '@components/ChatList';
 
 import React, { useCallback } from 'react';
 import { Container, Header, DragOver } from '@pages/DirectMessage/styles';
@@ -41,7 +42,7 @@ const DirectMessage = () => {
       }
       setChat('');
     },
-    [id, chat, workspace],
+    [chat, mutateChat, setChat, id, workspace],
   );
 
   if (!userData || !myData) {
@@ -54,7 +55,7 @@ const DirectMessage = () => {
         <img src={gravatar.url(userData.email, { s: '24px', d: 'retro' })} alt={userData.nickname} />
         <span>{userData.nickname}</span>
       </Header>
-      {/* <ChatList  /> 컴포넌트 배치만 해놓고 나중에 구현 */}
+      <ChatList chatData={chatData} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
     </Container>
   );

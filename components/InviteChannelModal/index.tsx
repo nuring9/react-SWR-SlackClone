@@ -18,6 +18,7 @@ const InviteChannelModal: FC<Props> = ({ show, onCloseModal, setShowInviteChanne
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
   const { data: userData } = useSWR<IUser>('/api/users', fetcher);
+
   const { mutate: revalidateMembers } = useSWR<IUser[]>(
     userData ? `/api/workspaces/${workspace}/channels/${channel}/members` : null, // 백개발자가 만든 rest api 참고
     fetcher,
@@ -33,6 +34,7 @@ const InviteChannelModal: FC<Props> = ({ show, onCloseModal, setShowInviteChanne
         .post(`/api/workspaces/${workspace}/channels/${channel}/members`, {
           email: newMember,
         })
+
         .then(() => {
           revalidateMembers(); // 추가된 멤버를 가져올 수 있도록 다시 요청한것.
           setShowInviteChannelModal(false);
