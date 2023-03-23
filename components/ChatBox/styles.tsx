@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-// import { MentionsInput } from 'react-mentions';
+import { MentionsInput } from 'react-mentions';
 
 export const ChatArea = styled.div`
   display: flex;
@@ -16,7 +16,7 @@ export const Form = styled.form`
   border: 1px solid rgb(29, 28, 29);
 `;
 
-export const MentionsTextarea = styled.textarea`
+export const MentionsTextarea = styled(MentionsInput)`
   font-family: Slack-Lato, appleLogo, sans-serif;
   font-size: 15px;
   padding: 8px 9px;
@@ -43,6 +43,34 @@ export const MentionsTextarea = styled.textarea`
     width: 150px;
   }
 `;
+
+// export const MentionsTextarea = styled.textarea`
+//   font-family: Slack-Lato, appleLogo, sans-serif;
+//   font-size: 15px;
+//   padding: 8px 9px;
+//   width: 100%;
+//   & strong {
+//     background: skyblue;
+//   }
+//   & textarea {
+//     height: 44px;
+//     padding: 9px 10px !important;
+//     outline: none !important;
+//     border-radius: 4px !important;
+//     resize: none !important;
+//     line-height: 22px;
+//     border: none;
+//   }
+//   & ul {
+//     border: 1px solid lightgray;
+//     max-height: 200px;
+//     overflow-y: auto;
+//     padding: 9px 10px;
+//     background: white;
+//     border-radius: 4px;
+//     width: 150px;
+//   }
+// `;
 
 export const Toolbox = styled.div`
   position: relative;

@@ -5,9 +5,11 @@ import React, { useCallback, useEffect, useRef, VFC } from 'react';
 
 import { useParams } from 'react-router';
 import useSWR from 'swr';
-// import gravatar from 'gravatar';
+import { Mention, SuggestionDataItem } from 'react-mentions';
+import gravatar from 'gravatar';
 
 import autosize from 'autosize';
+import { EachMention } from '@components/ChatBox/styles';
 
 interface Props {
   chat: string;
@@ -43,6 +45,32 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
     [onSubmitForm],
   );
 
+  const renderSuggestion: (
+    suggestion: SuggestionDataItem,
+    search: string,
+    highlightedDisplay: React.ReactNode,
+    index: number,
+    focus: boolean,
+  ) => React.ReactNode = useCallback(
+    (member, search, highlightedDisplay, index, focus) => {
+      if (!memberData) {
+        return null; // memberData 가 없다면 그냥 리턴
+      }
+      return (
+        // EachMention은 만들어두었던 styled. button 태그임.
+        // highlightedDisplay는 하이라이트 기능
+        <EachMention focus={focus}>
+          <img
+            src={gravatar.url(memberData[index].email, { s: '20px', d: 'retro' })}
+            alt={memberData[index].nickname}
+          />
+          <span>{highlightedDisplay}</span>
+        </EachMention>
+      );
+    },
+    [memberData],
+  );
+
   return (
     <ChatArea>
       <Form onSubmit={onSubmitForm}>
@@ -52,8 +80,17 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
           onChange={onChangeChat}
           onKeyDown={onKeydownChat}
           placeholder={placeholder}
-          ref={textareaRef}
-        />
+          inputRef={textareaRef}
+          // allowSuggestionsAboveCursor
+          forceSuggestionsAboveCursor
+        >
+          <Mention
+            appendSpaceOnAdd
+            trigger="@"
+            data={memberData?.map((v) => ({ id: v.id, display: v.nickname })) || []}
+            renderSuggestion={renderSuggestion}
+          />
+        </MentionsTextarea>
 
         <Toolbox>
           <SendButton
