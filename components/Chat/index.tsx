@@ -1,6 +1,7 @@
 import React, { VFC } from 'react';
 import { IDM } from '@typings/db';
 import { ChatWrapper } from './styles';
+import dayjs from 'dayjs';
 
 import gravatar from 'gravatar';
 
@@ -18,7 +19,7 @@ const Chat: VFC<Props> = ({ data }) => {
       <div className="chat-text">
         <div className="chat-user">
           <b>{user.nickname}</b>
-          <span>{data.createdAt}</span>
+          <span>{dayjs(data.createdAt).format('h:mm A')}</span>
         </div>
         <p>{data.content}</p>
       </div>
