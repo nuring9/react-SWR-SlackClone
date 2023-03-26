@@ -1,15 +1,16 @@
 import { ChatArea, Form, SendButton, Toolbox, MentionsTextarea } from '@components/ChatBox/styles';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React, { useCallback, useEffect, useRef, VFC } from 'react';
 
+import { EachMention } from '@components/ChatBox/styles';
+
+import React, { useCallback, useEffect, useRef, VFC } from 'react';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
 import { Mention, SuggestionDataItem } from 'react-mentions';
-import gravatar from 'gravatar';
 
 import autosize from 'autosize';
-import { EachMention } from '@components/ChatBox/styles';
+import gravatar from 'gravatar';
 
 interface Props {
   chat: string;
@@ -45,20 +46,16 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
     [onSubmitForm],
   );
 
-  const renderSuggestion: (
-    suggestion: SuggestionDataItem,
-    search: string,
-    highlightedDisplay: React.ReactNode,
-    index: number,
-    focus: boolean,
-  ) => React.ReactNode = useCallback(
-    (member, search, highlightedDisplay, index, focus) => {
-      if (!memberData) {
-        return null; // memberData 가 없다면 그냥 리턴
-      }
+  const renderSuggestion = useCallback(
+    (
+      suggestion: SuggestionDataItem,
+      search: string,
+      highlightedDisplay: React.ReactNode,
+      index: number,
+      focus: boolean,
+    ): React.ReactNode => {
+      if (!memberData) return;
       return (
-        // EachMention은 만들어두었던 styled. button 태그임.
-        // highlightedDisplay는 하이라이트 기능
         <EachMention focus={focus}>
           <img
             src={gravatar.url(memberData[index].email, { s: '20px', d: 'retro' })}
@@ -71,6 +68,32 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
     [memberData],
   );
 
+  // const renderSuggestion: (
+  //   suggestion: SuggestionDataItem,
+  //   search: string,
+  //   highlightedDisplay: React.ReactNode,
+  //   index: number,
+  //   focus: boolean,
+  // ) => React.ReactNode = useCallback(
+  //   (member, search, highlightedDisplay, index, focus) => {
+  //     if (!memberData) {
+  //       return null; // memberData 가 없다면 그냥 리턴
+  //     }
+  //     return (
+  //       // EachMention은 만들어두었던 styled. button 태그임.
+  //       // highlightedDisplay는 하이라이트 기능
+  //       <EachMention focus={focus}>
+  //         <img
+  //           src={gravatar.url(memberData[index].email, { s: '20px', d: 'retro' })}
+  //           alt={memberData[index].nickname}
+  //         />
+  //         <span>{highlightedDisplay}</span>
+  //       </EachMention>
+  //     );
+  //   },
+  //   [memberData],
+  // );
+
   return (
     <ChatArea>
       <Form onSubmit={onSubmitForm}>
@@ -78,7 +101,7 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
           id="editor-chat"
           value={chat}
           onChange={onChangeChat}
-          onKeyDown={onKeydownChat}
+          onKeyPress={onKeydownChat}
           placeholder={placeholder}
           inputRef={textareaRef}
           // allowSuggestionsAboveCursor
