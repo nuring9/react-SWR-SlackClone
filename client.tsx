@@ -9,8 +9,7 @@ import axios from 'axios';
 import App from './layouts/App';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL =
-  process.env.NODE_ENV === 'production' ? 'https://sleact.nodebird.com' : 'http://localhost:3090';
+axios.defaults.baseURL = process.env.NODE_ENV === 'production' ? 'http://localhost:3095' : 'http://localhost:3090';
 console.log('env', process.env.NODE_ENV === 'production');
 
 render(

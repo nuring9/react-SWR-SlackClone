@@ -64,16 +64,12 @@ const Workspace: VFC = () => {
 
   console.log(a);
 
-  const {
-    data: userData,
-    error,
-    mutate,
-  } = useSWR<IUser | false>('/api/users', fetcher, {
+  const { data: userData, mutate } = useSWR<IUser | false>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
 
   const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher); // 조건부요청
-  const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
+  // const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
 
   useEffect(() => {
     if (userData && channelData && socket) {
