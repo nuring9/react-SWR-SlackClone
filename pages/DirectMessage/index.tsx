@@ -14,6 +14,7 @@ import useSWR from 'swr';
 import { IDM } from '@typings/db';
 
 import useInput from '@hooks/useInput';
+import makeSection from '@utils/makeSection';
 
 const DirectMessage = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
@@ -49,13 +50,17 @@ const DirectMessage = () => {
     return null;
   }
 
+  const chatSections = makeSection(chatData ? [...chatData].reverse() : []);
+  // [].concat(...chatData) 빈배열에 chat를 합치면 새로운 배열이 생긴다. 이걸 reverse
+  // concat을 사용하지 않고 더 짧게 구현하려면 [...chatData].reverse() 스프레드문법을 사용하면 새로운 배열,
+
   return (
     <Container>
       <Header>
         <img src={gravatar.url(userData.email, { s: '24px', d: 'retro' })} alt={userData.nickname} />
         <span>{userData.nickname}</span>
       </Header>
-      <ChatList chatData={chatData} />
+      <ChatList chatSections={chatSections} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
     </Container>
   );
