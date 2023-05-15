@@ -3,20 +3,30 @@ import Chat from '@components/Chat';
 
 import { IDM } from '@typings/db';
 
-import React, { useCallback, useRef, VFC } from 'react';
+import React, { useCallback, useRef, VFC, forwardRef } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 
 interface Props {
   chatSections: { [key: string]: IDM[] };
+  setSize: (f: (index: number) => number) => Promise<IDM[][] | undefined>;
+  isEmpty: boolean;
+  isReachingEnd: boolean;
 }
 
-const ChatList: VFC<Props> = ({ chatSections }) => {
-  const scrollbarRef = useRef(null);
-  const onScroll = useCallback(() => {}, []);
+const ChatList = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isEmpty, isReachingEnd }, ref) => {
+  const onScroll = useCallback((values) => {
+    if (values.scrollTop === 0) {
+      console.log('가장 위');
+      setSize((prevSize) => prevSize + 1).then(() => {
+        // 제일 위로 올라가면 페이지를 하나 추가, 정확히는 size를 추가
+        //스크롤 위치 유지
+      });
+    }
+  }, []);
 
   return (
     <ChatZone>
-      <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>
+      <Scrollbars autoHide ref={ref} onScrollFrame={onScroll}>
         {Object.entries(chatSections).map(([date, chats]) => {
           // 객체를 배열로 바꾸는 Object.entries
           return (
@@ -33,6 +43,6 @@ const ChatList: VFC<Props> = ({ chatSections }) => {
       </Scrollbars>
     </ChatZone>
   );
-};
+});
 
 export default ChatList;
